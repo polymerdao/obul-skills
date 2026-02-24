@@ -8,6 +8,7 @@ metadata:
     requires:
       env: [ "OBUL_API_KEY" ]
       primaryEnv: "OBUL_API_KEY"
+registries: {}
 ---
 
 # CoinGecko x402

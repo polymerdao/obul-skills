@@ -11,6 +11,7 @@ There is no application code, no build system, no tests. The repo is documentati
 ## Repository Structure
 
 ```
+registry.md              # Registry reference and publishing guide
 skills/
   <service-name>/
     SKILL.md          # The skill definition file
@@ -22,7 +23,7 @@ Each service gets its own folder under `skills/` containing a single `SKILL.md`.
 
 Every `SKILL.md` follows this structure:
 
-1. **YAML frontmatter** — `name` (kebab-case), `description`, `homepage`, `metadata.obul-skill` (emoji, requires.env, requires.primaryEnv)
+1. **YAML frontmatter** — `name` (kebab-case), `description`, `homepage`, `metadata.obul-skill` (emoji, requires.env, requires.primaryEnv), `registries` (dict of registry → published slug)
 2. **H1 title** — Service name
 3. **Overview paragraph** — What the service does, that it's pay-per-use through Obul
 4. **Authentication** — Always the same Obul proxy pattern with `x-obul-api-key: {{OBUL_API_KEY}}` header and the base URL
@@ -40,6 +41,9 @@ Every `SKILL.md` follows this structure:
 - All request examples use full Obul proxy URLs: `https://proxy.obul.ai/proxy/https/<upstream-host>/...`
 - All requests include `Content-Type: application/json` and `x-obul-api-key: {{OBUL_API_KEY}}` headers
 - Pricing tiers: `$0.00` (health checks), `$0.0001` (polling), `$0.001–$0.01` (simple queries), `$0.01–$0.05` (complex queries), `$0.05+` (heavy operations)
+- When a skill is published to a registry, add a `registry-name: published-slug` entry to `registries` in that skill's frontmatter
+- Registry names (keys) must match the H3 anchor IDs in `registry.md`
+- The value is the slug/identifier used on that registry (e.g., `smithery: "@obul/browserbase"`)
 
 ## Writing a New Skill
 
