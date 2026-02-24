@@ -25,6 +25,7 @@ Obul is the **universal API gateway for the agent economy**. It proxies requests
 |---|---|---|
 | 🌐 | [browserbase](skills/browserbase/SKILL.md) | Headless browser sessions for web scraping and automation |
 | 🦎 | [coingecko](skills/coingecko/SKILL.md) | Real-time crypto market data, token prices, and DEX analytics |
+| 🔥 | [firecrawl](skills/firecrawl/SKILL.md) | Web scraping, crawling, site mapping, search, and structured extraction |
 | 🔍 | [x-search](skills/x-search/SKILL.md) | X/Twitter search, user profiles, and trending topics |
 | ⚡ | [zapper](skills/zapper/SKILL.md) | Multi-chain portfolio balances, token prices, and onchain data |
 
