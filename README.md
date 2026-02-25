@@ -27,6 +27,7 @@ Obul is the **universal API gateway for the agent economy**. It proxies requests
 | 🌐 | [browserbase](skills/browserbase/SKILL.md) | Headless browser sessions for web scraping and automation |
 | 🦎 | [coingecko](skills/coingecko/SKILL.md) | Real-time crypto market data, token prices, and DEX analytics |
 | 🔥 | [firecrawl](skills/firecrawl/SKILL.md) | Web scraping, crawling, site mapping, search, and structured extraction |
+| 🛠️ | [skill-creator](skills/skill-creator/SKILL.md) | Meta-skill: create a new Obul skill definition for any x402 API |
 | 🔍 | [x-search](skills/x-search/SKILL.md) | X/Twitter search, user profiles, and trending topics |
 | ⚡ | [zapper](skills/zapper/SKILL.md) | Multi-chain portfolio balances, token prices, and onchain data |
 
@@ -43,4 +44,4 @@ curl -X POST "https://proxy.obul.ai/proxy/https/www.browserbase.com/v1/sessions"
 
 - [Obul Dashboard](https://my.obul.ai) — manage keys, view usage, set spending caps
 - [x402 Protocol](https://www.x402.org/) — the payment protocol powering Obul
-- [Writing a New Skill](https://github.com/dpbmaverick98/Agent_Army_Skills/blob/main/Agent_Army_Skills_Obul/how-to-write-obul-skills.md) — guide for contributors
+- [Writing a New Skill](skills/skill-creator/SKILL.md) — guide for contributors
