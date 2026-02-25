@@ -43,7 +43,7 @@ Every `SKILL.md` follows this structure:
 - Pricing tiers: `$0.00` (health checks), `$0.0001` (polling), `$0.001–$0.01` (simple queries), `$0.01–$0.05` (complex queries), `$0.05+` (heavy operations)
 - When a skill is published to a registry, add a `registry-name: published-slug` entry to `registries` in that skill's frontmatter
 - Registry names (keys) must match the H3 anchor IDs in `registry.md`
-- The value is the slug/identifier used on that registry (e.g., `smithery: "@obul/browserbase"`)
+- The published slug is the skill name with `-obul` appended (e.g., `clawhub: "browserbase-obul"`)
 
 ## Writing a New Skill
 
