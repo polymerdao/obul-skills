@@ -229,6 +229,68 @@ large-context requests extremely cost-effective compared to per-token pricing.
 - **Use system messages** — Set persona, instructions, and constraints via the `system` role message at the start of the
   conversation.
 
+## OpenClaw Integration
+
+OpenClaw can use MiniMax M2.5 as its LLM provider via the Obul proxy. This gives OpenClaw agents access to a 200K-context
+reasoning model at $0.001/request.
+
+### Quick Setup
+
+```bash
+# 1. Set your Obul API key
+export OBUL_API_KEY="your_obul_api_key_here"
+
+# 2. Add the provider
+openclaw config set models.mode merge
+openclaw config set models.providers.minimax-x402.baseUrl "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1"
+openclaw config set models.providers.minimax-x402.apiKey '${OBUL_API_KEY}'
+openclaw config set models.providers.minimax-x402.api openai-completions
+openclaw config set models.providers.minimax-x402.authHeader false
+openclaw config set models.providers.minimax-x402.headers.X-Obul-Api-Key '${OBUL_API_KEY}'
+
+# 3. Register the model
+openclaw config set models.providers.minimax-x402.models '[{"id":"MiniMax-M2.5","name":"MiniMax M2.5 (x402 via Obul)","contextWindow":200000,"maxTokens":128000}]' --strict-json
+
+# 4. Set as default (optional)
+openclaw config set agents.defaults.model.primary "minimax-x402/MiniMax-M2.5"
+
+# 5. Restart the gateway
+openclaw gateway restart
+```
+
+### Manual Configuration
+
+Alternatively, add this block to `~/.openclaw/openclaw.json` under `models.providers`:
+
+```json
+"minimax-x402": {
+  "baseUrl": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1",
+  "apiKey": "${OBUL_API_KEY}",
+  "api": "openai-completions",
+  "authHeader": false,
+  "headers": {
+    "X-Obul-Api-Key": "${OBUL_API_KEY}"
+  },
+  "models": [
+    {
+      "id": "MiniMax-M2.5",
+      "name": "MiniMax M2.5 (x402 via Obul)",
+      "contextWindow": 200000,
+      "maxTokens": 128000
+    }
+  ]
+}
+```
+
+Set `authHeader: false` because the Obul proxy authenticates via the `X-Obul-Api-Key` header, not a standard
+`Authorization: Bearer` header. Set `mode: "merge"` to keep any existing providers alongside MiniMax.
+
+### Verify
+
+```bash
+openclaw config get models.providers.minimax-x402
+```
+
 ## Error Handling
 
 | Error                       | Cause                                    | Solution                                                                                   |
