@@ -7,7 +7,7 @@ Skills fall into two categories for registry purposes:
 - **Own x402 endpoints** (hosted at `*.x402endpoints.com`) — publish to both x402 endpoint registries and agent skill registries
 - **Third-party x402 endpoints** (e.g., CoinGecko, Browserbase) — publish to agent skill registries only
 
-**Slug convention:** The published slug is the skill name with `-obul` appended (e.g., `browserbase-obul`, `firecrawl-obul`).
+**Slug convention:** The published slug is `obul-` prefixed to the skill name (e.g., `obul-browserbase`, `obul-firecrawl`).
 
 ## Quick Reference
 
