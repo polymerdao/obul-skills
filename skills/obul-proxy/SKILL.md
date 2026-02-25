@@ -1,7 +1,7 @@
 ---
 name: obul-proxy
 description: Proxy requests through Obul (x402 handled by Obul). Use when users mention Obul proxy or need to call an x402 service.
-homepage: https://proxy.obul.ai
+homepage: https://obul.ai
 metadata:
   obul-skill:
     emoji: "🔗"
