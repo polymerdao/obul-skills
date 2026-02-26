@@ -196,18 +196,17 @@ Add the following to `~/.openclaw/openclaw.json`:
 - `"api": "anthropic-messages"` tells OpenClaw to use Anthropic Messages format
 - No `/anthropic` prefix — the endpoint exposes Anthropic API directly at `/v1/messages`
 
-Set `OBUL_API_KEY` in the systemd service drop-in:
-
-```ini
-# /home/ubuntu/.config/systemd/user/openclaw-gateway.service.d/obul.conf
-[Service]
-Environment=OBUL_API_KEY=obul_live_xxxx
-```
-
-Reload after changes:
+Set `OBUL_API_KEY` in `~/.openclaw/.env` (OpenClaw loads this file automatically at startup):
 
 ```bash
-systemctl --user daemon-reload && systemctl --user restart openclaw-gateway
+# ~/.openclaw/.env
+OBUL_API_KEY=obul_live_xxxx
+```
+
+Restart the gateway after changes:
+
+```bash
+openclaw gateway restart
 ```
 
 ## When to Use
