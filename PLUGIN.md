@@ -47,6 +47,8 @@ claude plugin install obul
 | `/obul:x-search <query>` | Search X/Twitter for tweets | $0.001 |
 | `/obul:crypto-price <token>` | Crypto price, market cap, 24h change | $0.01 |
 | `/obul:crypto-portfolio <address>` | Wallet portfolio across 60+ chains | $0.005 |
+| `/obul:browse <url>` | Open URL in cloud browser, screenshot + content | $0.051 |
+| `/obul:browser-session` | Create cloud browser session, return CDP URL | $0.05 |
 
 ## How It Works
 
