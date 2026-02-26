@@ -1,7 +1,7 @@
 ---
 name: minimax
-description: Generate text with MiniMax M2.5 — a 200K-context reasoning model with tool calling — via OpenAI-compatible pay-per-use API through the Obul proxy.
-homepage: https://www.minimax.io
+description: Call MiniMax M2.5 (200k context, reasoning) via the minimaxxing x402 endpoint through the Obul proxy. Includes OpenClaw model provider setup.
+homepage: https://x402endpoints.com
 metadata:
   obul-skill:
     emoji: "🧠"
@@ -11,292 +11,226 @@ metadata:
 registries: {}
 ---
 
-# MiniMax M2.5
+# MiniMax
 
-MiniMax M2.5 is a 229B-parameter mixture-of-experts reasoning model with a ~200K token context window. Through the Obul
-proxy, you get pay-per-use access to OpenAI-compatible chat completions at a flat $0.001 per request — no MiniMax account
-or API key required. The model includes built-in chain-of-thought reasoning, streaming, and function/tool calling.
+MiniMax M2.5 is a reasoning-capable frontier model with a 200k token context window and 128k max output tokens,
+available via `minimaxxing.x402endpoints.com`. The endpoint uses the x402 USDC micropayment protocol — $0.001
+per request on Base mainnet. Route through the Obul proxy to handle x402 payments automatically with just an
+API key.
 
 ## Authentication
 
-All requests route through the Obul proxy. Include your Obul API key in every request:
+All requests route through the Obul proxy, which handles x402 payment negotiation automatically. Include your
+Obul API key in every request:
 
 ```json
 {
   "headers": {
     "Content-Type": "application/json",
-    "x-obul-api-key": "{{OBUL_API_KEY}}"
+    "x-obul-api-key": "{{OBUL_API_KEY}}",
+    "anthropic-version": "2023-06-01"
   }
 }
 ```
 
 Base URL: `https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com`
 
-To get an Obul API key, sign up at **https://my.obul.ai**.
+The Anthropic Messages API is at `/v1/messages`. There is no `/anthropic` prefix.
 
 ## Common Operations
 
-### Chat Completion
+### Health Check
 
-Send a message and get a response. The model always reasons internally before answering — expect `<think>...</think>`
-tags in the output containing the model's chain-of-thought.
+Verify the endpoint is operational.
 
-**Pricing:** $0.001
+**Pricing:** $0.00
 
 ```json
 {
-  "method": "POST",
-  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/chat/completions",
+  "method": "GET",
+  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/health",
   "headers": {
-    "Content-Type": "application/json",
     "x-obul-api-key": "{{OBUL_API_KEY}}"
-  },
-  "body": {
-    "model": "MiniMax-M2.5",
-    "messages": [
-      { "role": "system", "content": "You are a helpful assistant." },
-      { "role": "user", "content": "Explain how x402 payment protocol works in two sentences." }
-    ],
-    "temperature": 1.0,
-    "max_tokens": 1024
   }
 }
 ```
 
-**Response:** JSON object with `choices[0].message.content` containing the model's answer. The content may include
-`<think>...</think>` tags with reasoning before the final answer.
+**Response:** `{"status":"ok","model":"MiniMax-M2.5"}`
 
-### Streaming Chat
+### Chat Completion (Anthropic Messages API)
 
-Stream the response token-by-token via Server-Sent Events. Useful for long responses where you want incremental output.
+Send a message to MiniMax M2.5 using the Anthropic-compatible Messages API.
 
-**Pricing:** $0.001
-
-```json
-{
-  "method": "POST",
-  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/chat/completions",
-  "headers": {
-    "Content-Type": "application/json",
-    "x-obul-api-key": "{{OBUL_API_KEY}}"
-  },
-  "body": {
-    "model": "MiniMax-M2.5",
-    "messages": [
-      { "role": "user", "content": "Write a short poem about decentralized payments." }
-    ],
-    "stream": true,
-    "stream_options": { "include_usage": true }
-  }
-}
-```
-
-**Response:** Server-Sent Events stream of `chat.completion.chunk` objects. Each chunk contains a `delta` with partial
-content. The final chunk includes `usage` statistics when `include_usage` is set.
-
-### Function / Tool Calling
-
-Define tools the model can call. The model reasons about which tool to use, returns a `tool_calls` array, and you send
-the result back for a final answer. Supports parallel tool calls.
-
-**Pricing:** $0.001
+**Pricing:** $0.001 per request
 
 ```json
 {
   "method": "POST",
-  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/chat/completions",
+  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/messages",
   "headers": {
     "Content-Type": "application/json",
-    "x-obul-api-key": "{{OBUL_API_KEY}}"
+    "x-obul-api-key": "{{OBUL_API_KEY}}",
+    "anthropic-version": "2023-06-01"
   },
   "body": {
     "model": "MiniMax-M2.5",
+    "max_tokens": 1024,
     "messages": [
-      { "role": "user", "content": "What's the weather in San Francisco?" }
-    ],
-    "tools": [
-      {
-        "type": "function",
-        "function": {
-          "name": "get_weather",
-          "description": "Get current weather for a location",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "location": { "type": "string", "description": "City name" }
-            },
-            "required": ["location"]
-          }
-        }
-      }
-    ],
-    "tool_choice": "auto"
+      { "role": "user", "content": "Hello, what can you do?" }
+    ]
   }
 }
 ```
 
-**Response:** JSON object with `choices[0].message.tool_calls` containing an array of tool call requests. Each has an
-`id`, `function.name`, and `function.arguments` (JSON string). Send the tool result back as a `tool` role message with
-the matching `tool_call_id` to get the final answer.
+**Response:** Anthropic-format `message` object with a `content` array. Note: MiniMax may include a `thinking`
+block alongside the `text` block when reasoning is active. The response also includes `usage` with
+`input_tokens` and `output_tokens`.
 
-### Reasoning with Split Output
+### Chat Completion with System Prompt
 
-For complex problems, use `reasoning_split` to separate the model's chain-of-thought from its final answer into distinct
-fields. Without this, `<think>` tags appear inline in the content.
+Include a system prompt to set the model's behavior.
 
-**Pricing:** $0.001
+**Pricing:** $0.001 per request
 
 ```json
 {
   "method": "POST",
-  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/chat/completions",
+  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/messages",
   "headers": {
     "Content-Type": "application/json",
-    "x-obul-api-key": "{{OBUL_API_KEY}}"
+    "x-obul-api-key": "{{OBUL_API_KEY}}",
+    "anthropic-version": "2023-06-01"
   },
   "body": {
     "model": "MiniMax-M2.5",
+    "max_tokens": 2048,
+    "system": "You are a concise analyst. Respond in bullet points.",
     "messages": [
-      { "role": "user", "content": "Prove that the square root of 2 is irrational." }
-    ],
-    "reasoning_split": true,
-    "max_tokens": 4096
+      { "role": "user", "content": "Summarize the key risks of DeFi protocols." }
+    ]
   }
 }
 ```
 
-**Response:** JSON object with `choices[0].message.content` containing only the final answer, and
-`choices[0].message.reasoning_details` containing an array of thinking steps. This makes it easy to display or discard
-the reasoning separately.
+### Check Pricing
 
-### Long Context Analysis
+Get the current price per request.
 
-Analyze large documents by passing them as context. The ~200K token input window handles entire codebases, legal
-documents, or research papers. Pricing is flat per request regardless of input size.
-
-**Pricing:** $0.001
+**Pricing:** $0.00
 
 ```json
 {
-  "method": "POST",
-  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1/chat/completions",
+  "method": "GET",
+  "url": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/pricing",
   "headers": {
-    "Content-Type": "application/json",
     "x-obul-api-key": "{{OBUL_API_KEY}}"
-  },
-  "body": {
-    "model": "MiniMax-M2.5",
-    "messages": [
-      { "role": "system", "content": "You are a document analyst. Answer questions about the provided text." },
-      { "role": "user", "content": "<paste large document here>\n\nSummarize the key findings and list any action items." }
-    ],
-    "max_tokens": 4096
   }
 }
 ```
 
-**Response:** JSON object with the model's analysis in `choices[0].message.content`. The flat $0.001 pricing makes
-large-context requests extremely cost-effective compared to per-token pricing.
+**Response:** `{"price":"$0.001","priceUsd":0.001,"model":"MiniMax-M2.5","network":"eip155:8453"}`
 
 ## Endpoint Pricing Reference
 
-| Endpoint                     | Price  | Purpose                                         |
-|------------------------------|--------|--------------------------------------------------|
-| `POST /v1/chat/completions`  | $0.001 | Chat completion with reasoning, streaming, tools |
+| Endpoint              | Price   | Purpose                              |
+|-----------------------|---------|--------------------------------------|
+| `GET /health`         | $0.00   | Health check                         |
+| `GET /pricing`        | $0.00   | Current price per request            |
+| `POST /v1/messages`   | $0.001  | Anthropic Messages API (MiniMax M2.5)|
+| `POST /v1/chat/completions` | $0.001 | OpenAI-compatible chat completions |
 
-## When to Use
+## OpenClaw Model Provider Configuration
 
-- **Text generation** — Generate text, answer questions, write code, or summarize content with a state-of-the-art
-  reasoning model.
-- **Complex reasoning** — Math proofs, code debugging, multi-step analysis — the model reasons through problems with
-  built-in chain-of-thought.
-- **Tool-augmented agents** — Give agents function calling to interact with external APIs, databases, or services.
-- **Long document analysis** — Analyze entire codebases, contracts, or research papers within the ~200K context window
-  at flat per-request cost.
-- **Cost-effective AI backbone** — At $0.001/request flat rate, use as the reasoning engine for autonomous agents
-  without worrying about token-based cost spikes.
-
-## Best Practices
-
-- **Use streaming for long responses** — Set `stream: true` to get incremental output instead of waiting for the full
-  response, especially for reasoning-heavy queries.
-- **Leverage flat pricing** — The $0.001/request rate is independent of token count. Long-context requests that would
-  cost $0.03–$0.05 at per-token rates cost the same $0.001 here.
-- **Handle reasoning tags** — The model always produces `<think>...</think>` reasoning. Strip these tags for user-facing
-  output, or use `reasoning_split: true` to get them in a separate field.
-- **Set max_tokens** — Control output length explicitly. The model can generate up to 128K output tokens, so set a
-  reasonable limit for your use case.
-- **Use system messages** — Set persona, instructions, and constraints via the `system` role message at the start of the
-  conversation.
-
-## OpenClaw Integration
-
-OpenClaw can use MiniMax M2.5 as its LLM provider via the Obul proxy. This gives OpenClaw agents access to a 200K-context
-reasoning model at $0.001/request.
-
-### Quick Setup
+### Option A: CLI (recommended)
 
 ```bash
-# 1. Set your Obul API key
-export OBUL_API_KEY="your_obul_api_key_here"
-
-# 2. Add the provider
+# Register the MiniMax provider
 openclaw config set models.mode merge
-openclaw config set models.providers.minimax-x402.baseUrl "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1"
-openclaw config set models.providers.minimax-x402.apiKey '${OBUL_API_KEY}'
-openclaw config set models.providers.minimax-x402.api openai-completions
-openclaw config set models.providers.minimax-x402.authHeader false
-openclaw config set models.providers.minimax-x402.headers.X-Obul-Api-Key '${OBUL_API_KEY}'
+openclaw config set models.providers.minimax.baseUrl "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com"
+openclaw config set models.providers.minimax.api anthropic-messages
+openclaw config set models.providers.minimax.headers '{"x-obul-api-key":"${OBUL_API_KEY}"}'
+openclaw config set models.providers.minimax.models '[{"id":"MiniMax-M2.5","name":"MiniMax M2.5","reasoning":true,"contextWindow":200000,"maxTokens":128000}]'
 
-# 3. Register the model
-openclaw config set models.providers.minimax-x402.models '[{"id":"MiniMax-M2.5","name":"MiniMax M2.5 (x402 via Obul)","contextWindow":200000,"maxTokens":128000}]' --strict-json
-
-# 4. Set as default (optional)
-openclaw config set agents.defaults.model.primary "minimax-x402/MiniMax-M2.5"
-
-# 5. Restart the gateway
-openclaw gateway restart
+# Set as the default model
+openclaw config set agents.defaults.model.primary minimax/MiniMax-M2.5
 ```
 
-### Manual Configuration
+### Option B: Manual JSON
 
-Alternatively, add this block to `~/.openclaw/openclaw.json` under `models.providers`:
+Add the following to `~/.openclaw/openclaw.json`:
 
 ```json
-"minimax-x402": {
-  "baseUrl": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com/v1",
-  "apiKey": "${OBUL_API_KEY}",
-  "api": "openai-completions",
-  "authHeader": false,
-  "headers": {
-    "X-Obul-Api-Key": "${OBUL_API_KEY}"
-  },
-  "models": [
-    {
-      "id": "MiniMax-M2.5",
-      "name": "MiniMax M2.5 (x402 via Obul)",
-      "contextWindow": 200000,
-      "maxTokens": 128000
+{
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "minimax": {
+        "baseUrl": "https://proxy.obul.ai/proxy/https/minimaxxing.x402endpoints.com",
+        "api": "anthropic-messages",
+        "headers": { "x-obul-api-key": "${OBUL_API_KEY}" },
+        "models": [
+          {
+            "id": "MiniMax-M2.5",
+            "name": "MiniMax M2.5",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 128000
+          }
+        ]
+      }
     }
-  ]
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "minimax/MiniMax-M2.5"
+      }
+    }
+  }
 }
 ```
 
-Set `authHeader: false` because the Obul proxy authenticates via the `X-Obul-Api-Key` header, not a standard
-`Authorization: Bearer` header. Set `mode: "merge"` to keep any existing providers alongside MiniMax.
+**Key points:**
+- `baseUrl` does NOT include `/v1` — OpenClaw strips any trailing `/v1` and constructs the full path as `baseUrl + /v1/messages`
+- Use `headers` (not `apiKey`) to pass `x-obul-api-key` — this is the correct Obul auth header
+- `"api": "anthropic-messages"` tells OpenClaw to use Anthropic Messages format
+- No `/anthropic` prefix — the endpoint exposes Anthropic API directly at `/v1/messages`
 
-### Verify
+Set `OBUL_API_KEY` in the systemd service drop-in:
+
+```ini
+# /home/ubuntu/.config/systemd/user/openclaw-gateway.service.d/obul.conf
+[Service]
+Environment=OBUL_API_KEY=obul_live_xxxx
+```
+
+Reload after changes:
 
 ```bash
-openclaw config get models.providers.minimax-x402
+systemctl --user daemon-reload && systemctl --user restart openclaw-gateway
 ```
+
+## When to Use
+
+- **Long-context tasks** — 200k token context handles large documents, codebases, or lengthy conversations.
+- **Reasoning tasks** — Active reasoning/thinking mode for complex multi-step analysis.
+- **Pay-per-request** — $0.001 per request via Obul, no subscription required.
+- **Primary OpenClaw model** — Drop-in Anthropic-compatible model via Obul proxy.
+
+## Best Practices
+
+- **Do not include `/v1` in `baseUrl`** — OpenClaw strips trailing `/v1` and constructs the endpoint as `baseUrl + /v1/messages` automatically.
+- **Do not add `/anthropic`** — Unlike `api.minimax.io`, this endpoint has no `/anthropic` prefix.
+- **Reasoning blocks** — Responses may include `thinking` content blocks. Parse the `text` block for the
+  final answer.
+- **Never expose `OBUL_API_KEY`** — Store as an environment variable; never hardcode in requests or logs.
 
 ## Error Handling
 
-| Error                       | Cause                                    | Solution                                                                                   |
-|-----------------------------|------------------------------------------|--------------------------------------------------------------------------------------------|
-| `402 Payment Required`      | Payment not processed or insufficient    | Verify your OBUL_API_KEY is valid and your account has sufficient balance at my.obul.ai.   |
-| `400 Bad Request`           | Missing or invalid request body          | Ensure `model` and `messages` fields are present and correctly formatted.                  |
-| `429 Too Many Requests`     | Rate limit exceeded                      | Add a short delay between requests and avoid rapid-fire calls.                             |
-| `500 Internal Server Error` | Upstream MiniMax service issue           | Wait a few seconds and retry. If persistent, the service may be experiencing downtime.     |
-| `503 Service Unavailable`   | MiniMax service temporarily down         | Retry after a brief wait.                                                                  |
+| Error                       | Cause                                        | Solution                                                                              |
+|-----------------------------|----------------------------------------------|---------------------------------------------------------------------------------------|
+| `402 Payment Required`      | x402 payment required (direct call, no Obul) | Route through Obul proxy with `x-obul-api-key`.                                      |
+| `403 Forbidden`             | Invalid or missing Obul API key              | Verify `OBUL_API_KEY` is set correctly in the `headers` field.                        |
+| `404 Not Found`             | Wrong path                                   | Use `/v1/messages` — no `/anthropic` prefix.                                          |
+| `429 Too Many Requests`     | Rate limit exceeded                          | Add a short delay between requests.                                                   |
+| `502 Bad Gateway`           | Upstream MiniMax API error                   | Retry. If persistent, check `/health`.                                                |
