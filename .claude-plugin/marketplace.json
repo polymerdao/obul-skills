@@ -1,0 +1,20 @@
+{
+  "name": "obul",
+  "owner": {
+    "name": "Obul",
+    "email": "support@obul.ai"
+  },
+  "metadata": {
+    "description": "Pay-per-use API skills for Claude Code — web scraping, crypto data, X/Twitter search, headless browsers, and AI models through the Obul proxy.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "obul",
+      "source": "./plugin",
+      "description": "Pay-per-use API access via Obul proxy — web scraping, crypto, X/Twitter search, browsers, AI models.",
+      "category": "api",
+      "tags": ["x402", "web-scraping", "crypto", "search"]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
-name: zapper
-description: Query portfolio balances, token prices, transaction details, and onchain search across 60+ chains via Zapper's GraphQL API through the Obul proxy.
+name: obul-zapper
+description: "USE THIS SKILL WHEN: the user asks for wallet portfolio balances, onchain token prices, transaction history, or needs to search addresses/tokens across multiple blockchains. Provides pay-per-use multi-chain data via Zapper through the Obul proxy."
 homepage: https://build.zapper.xyz
 metadata:
   obul-skill:

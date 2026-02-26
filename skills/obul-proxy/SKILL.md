@@ -1,6 +1,6 @@
 ---
 name: obul-proxy
-description: Proxy requests through Obul (x402 handled by Obul). Use when users mention Obul proxy or need to call an x402 service.
+description: "USE THIS SKILL WHEN: the user wants to proxy a request through Obul, call an x402 API directly, or needs to understand the Obul proxy URL pattern. Handles x402 payment negotiation automatically."
 homepage: https://obul.ai
 metadata:
   obul-skill:

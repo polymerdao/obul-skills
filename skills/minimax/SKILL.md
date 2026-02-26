@@ -1,6 +1,6 @@
 ---
-name: minimax
-description: Call MiniMax M2.5 (200k context, reasoning) via the minimaxxing x402 endpoint through the Obul proxy. Includes OpenClaw model provider setup.
+name: obul-minimax
+description: "USE THIS SKILL WHEN: the user wants to call MiniMax M2.5 for chat completions, needs a reasoning model with 200K context, or wants an alternative LLM via x402. Provides pay-per-use MiniMax access through the Obul proxy."
 homepage: https://x402endpoints.com
 metadata:
   obul-skill:

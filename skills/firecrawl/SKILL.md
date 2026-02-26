@@ -1,6 +1,6 @@
 ---
-name: firecrawl
-description: Scrape, crawl, map, search, and extract structured data from the web via Firecrawl's pay-per-use API through the Obul proxy.
+name: obul-firecrawl
+description: "USE THIS SKILL WHEN: the user wants to scrape a URL, crawl a website, search the web, map site URLs, or extract structured data from web pages. Provides pay-per-use web scraping via Firecrawl through the Obul proxy."
 homepage: https://www.firecrawl.dev
 metadata:
   obul-skill:
@@ -179,6 +179,7 @@ key fields like titles, prices, descriptions, and other structured content from 
   custom parsers.
 - **AI agent browsing** — Give autonomous agents the ability to read and understand web pages at a predictable
   per-call cost.
+
 
 ## Best Practices
 

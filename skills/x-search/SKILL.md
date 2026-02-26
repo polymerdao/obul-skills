@@ -1,6 +1,6 @@
 ---
-name: x-search
-description: Search X/Twitter posts, get user profiles, read individual tweets, browse timelines, and check trending topics via TweetX402's pay-per-use x402 API through the Obul proxy.
+name: obul-x-search
+description: "USE THIS SKILL WHEN: the user wants to search X/Twitter, look up a Twitter user profile, read a specific tweet, browse a user's timeline, or check trending topics. Provides pay-per-use X/Twitter data via TweetX402 through the Obul proxy."
 homepage: https://tweetx402.com
 metadata:
   obul-skill:

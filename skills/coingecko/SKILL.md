@@ -1,6 +1,6 @@
 ---
-name: coingecko
-description: Access real-time crypto market data, token prices, DEX pool analytics, and trending pools via CoinGecko's pay-per-use API through the Obul proxy.
+name: obul-coingecko
+description: "USE THIS SKILL WHEN: the user asks for cryptocurrency prices, token data, DEX pool analytics, or trending pools. Provides pay-per-use crypto market data via CoinGecko through the Obul proxy."
 homepage: https://www.coingecko.com/en/api/x402
 metadata:
   obul-skill:

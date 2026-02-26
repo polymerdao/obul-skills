@@ -1,0 +1,22 @@
+{
+  "name": "obul",
+  "version": "0.1.0",
+  "description": "Pay-per-use API access to web scraping, crypto data, X/Twitter search, headless browsers, and AI models — no accounts needed, just an OBUL_API_KEY.",
+  "author": {
+    "name": "Obul",
+    "url": "https://obul.ai"
+  },
+  "homepage": "https://obul.ai",
+  "repository": "https://github.com/anthropics/obul-skills",
+  "license": "MIT",
+  "keywords": ["x402", "api", "web-scraping", "crypto", "search", "pay-per-use"],
+  "skills": [
+    "./skills/firecrawl",
+    "./skills/browserbase",
+    "./skills/coingecko",
+    "./skills/minimax",
+    "./skills/obul-proxy",
+    "./skills/x-search",
+    "./skills/zapper"
+  ]
+}

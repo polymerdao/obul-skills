@@ -40,6 +40,19 @@ curl -X POST "https://proxy.obul.ai/proxy/https/www.browserbase.com/v1/sessions"
   -d '{"projectId": "default"}'
 ```
 
+## Claude Code Plugin
+
+This repo is also a Claude Code plugin. Add it as a marketplace and install:
+
+```sh
+claude plugin marketplace add /path/to/obul-skills
+claude plugin install obul
+```
+
+Available commands: `/obul:scrape`, `/obul:search`, `/obul:x-search`, `/obul:crypto-price`, `/obul:crypto-portfolio`
+
+See [PLUGIN.md](PLUGIN.md) for full details.
+
 ## Resources
 
 - [Obul Dashboard](https://my.obul.ai) — manage keys, view usage, set spending caps

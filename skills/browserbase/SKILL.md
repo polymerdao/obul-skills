@@ -1,6 +1,6 @@
 ---
-name: browserbase
-description: Run pay-per-use headless browser sessions for web scraping, automation, and AI agent workflows through the Obul proxy.
+name: obul-browserbase
+description: "USE THIS SKILL WHEN: the user needs a headless browser session, wants to automate a browser, or needs full Chrome DevTools Protocol access for scraping or testing. Provides pay-per-use cloud browser sessions via Browserbase through the Obul proxy."
 homepage: https://www.browserbase.com
 metadata:
   obul-skill:
